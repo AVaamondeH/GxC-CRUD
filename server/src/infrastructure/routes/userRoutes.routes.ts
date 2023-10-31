@@ -1,14 +1,14 @@
 import express from 'express';
 import { getUsersController } from '../controllers/get_users';
 import { postUserController } from '../controllers/post_users';
+import { updateUserController } from '../controllers/put_user';
+import { deleteUserController } from '../controllers/delete_user';
 
 const router = express.Router();
 
-// Definir las rutas CRUD aquí
 router.get('/', getUsersController);
-
 router.post('/', postUserController);
-
-// Puedes importar controladores o servicios desde otras capas para manejar las solicitudes
+router.put("/:id", updateUserController)
+router.delete("/:id", deleteUserController)
 
 export default router;
