@@ -12,7 +12,7 @@
 
 ## Descripcion
 
-* Una tabal de usuarios
+* Una tabla de usuarios
 
 ## Como usar
 
@@ -60,3 +60,5 @@ $ npm start
 # Y por ulti levanta la app
 $ npm run dev
 ```
+
+* Ya con eso puedes entar a http://localhost:5173/ o a este [Link](http://localhost:5173/) cuando ya tengas todo funcionando.
