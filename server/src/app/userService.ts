@@ -87,7 +87,6 @@ export const getUsersPaginated = async (
 
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    console.log(sortBy);
 
     const sortedUsers = [...filteredUsers].sort((a, b) => {
         if (sortBy === 'id') {

@@ -13,15 +13,14 @@ import { useState } from "react";
 
 type UserProperty = keyof User;
 
-const Filters= () => {
-	const { changePageSize } = useUserContext()
+const Filters = () => {
+	const { changeFilter } = useUserContext()
 	const [filterValue, setfilterValue] = useState({
 		column: "",
-		filter: "",
-		input: "",
+		filterType: "",
+		searchValue: "",
 	});
 	const handleChangeColunm = (value: string) => {
-		console.log(value);
 		setfilterValue({
 			...filterValue,
 			column: value
@@ -31,27 +30,34 @@ const Filters= () => {
 	const handleChangeFilter = (value: string) => {
 		setfilterValue({
 			...filterValue,
-			filter: value
+			filterType: value
 		})
-		console.log(value);
 	}
 
 	const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setfilterValue({
 			...filterValue,
-			input: value
+			searchValue: value
 		})
-		console.log(value);
+	}
+
+	const onClick = () => {
+		if (!filterValue.column || !filterValue.filterType || !filterValue.searchValue) {
+			console.error("Falta información en el filtro. Por favor, complete todos los campos.");
+		} else {
+			changeFilter(filterValue);
+		}
 	}
 
 
 	const userProperties: UserProperty[] = ['name', 'username', 'email', 'phone'];
 	return (
 		<>
-			<div className="flex items-center justify-end space-x-2 py-4">
+			<div className="flex items-center justify-end space-x-2 py-4 ">
 				<Select
 					onValueChange={(value) => handleChangeColunm(value)}
+					name="column"
 				>
 					<SelectTrigger className="w-[140px]">
 						<SelectValue placeholder="Select a column" />
@@ -69,33 +75,34 @@ const Filters= () => {
 				<Select
 					onValueChange={(value) => handleChangeFilter(value)}
 					disabled={filterValue.column ? false : true}
+					name="filter"
 				>
 					<SelectTrigger className="w-[140px]">
 						<SelectValue placeholder="Select a filter" />
 					</SelectTrigger>
 					<SelectContent>
 						<SelectGroup>
-							<SelectItem value="Contains">Contains</SelectItem>
-							<SelectItem value="Does Not Contain">Does Not Contain</SelectItem>
+							<SelectItem id="Contains" value="Contains">Contains</SelectItem>
+							<SelectItem value="NotContains">Not Contains</SelectItem>
 							<SelectItem value="Equals">Equals</SelectItem>
-							<SelectItem value="Not Equal">Not Equal</SelectItem>
-							<SelectItem value="Starts With">Starts With</SelectItem>
-							<SelectItem value="Ends With">Ends With</SelectItem>
+							<SelectItem value="NotEquals">Not Equal</SelectItem>
+							<SelectItem value="StartsWith">Starts With</SelectItem>
+							<SelectItem value="EndsWith">Ends With</SelectItem>
 						</SelectGroup>
 					</SelectContent>
 
 				</Select>
 				<Input
 					placeholder="Filter by"
-					disabled={filterValue.filter ? false : true}
+					disabled={filterValue.filterType ? false : true}
 					className="w-[200px] "
 					onChange={handleChangeInput}
-					/>
+				/>
 				<Button
 					variant="outline"
 					size="sm"
-					disabled={filterValue.input ? false : true}
-					onClick={() => setShowModal(!showModal)}
+					disabled={filterValue.searchValue ? false : true}
+					onClick={onClick}
 				>
 					Filter
 				</Button>

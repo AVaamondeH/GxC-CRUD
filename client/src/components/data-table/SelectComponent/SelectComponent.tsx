@@ -14,7 +14,6 @@ const SelectComponent = () => {
 
 	const handleChange = (value: string) => {
 		const number = parseInt(value);
-		console.log(number);
 		changePageSize(number);
 	}
 

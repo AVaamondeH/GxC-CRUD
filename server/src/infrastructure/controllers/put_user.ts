@@ -8,7 +8,6 @@ export const updateUserController = async (req: Request, res: Response) => {
         const userData = req.body;
 
         const { error, value } = updateUserValidation.validate(userData);
-        console.log(value);
         
         if (error) {
             res.status(400).json({ error: `User data not valid, ${error}` });
