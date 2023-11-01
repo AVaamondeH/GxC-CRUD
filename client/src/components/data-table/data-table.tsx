@@ -42,7 +42,7 @@ export function DataTable<TData, TValue>({
     return (
         <div>
             <div className="flex items-center justify-between space-x-2 py-4">
-            {/* New User button */}
+            {/* New user button */}
                 <Button
                     variant="outline"
                     size="sm"
@@ -50,18 +50,19 @@ export function DataTable<TData, TValue>({
                 >
                     Create new user
                 </Button>
-                <div>
+                <div className=" sm: w-auto flex-col">
                     <Filters/>
                 </div>
             </div>
-            <div className="rounded-md border">
-                <Table>
-                    <TableHeader>
+            {/* Table */}
+            <div className="rounded-md border ">
+                <Table className="text-center">
+                    <TableHeader >
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
+                            <TableRow key={headerGroup.id} >
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableHead key={header.id}>
+                                        <TableHead key={header.id} className="text-center">
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
@@ -74,7 +75,7 @@ export function DataTable<TData, TValue>({
                             </TableRow>
                         ))}
                     </TableHeader>
-                    <TableBody>
+                    <TableBody >
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
@@ -90,7 +91,7 @@ export function DataTable<TData, TValue>({
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                <TableCell colSpan={columns.length} className="h-24 text-start">
                                     No results.
                                 </TableCell>
                             </TableRow>
@@ -98,6 +99,7 @@ export function DataTable<TData, TValue>({
                     </TableBody>
                 </Table>
             </div>
+            
             {/* bottom buttons */}
             <div className="flex items-center justify-between space-x-2 py-4">
                 {/* Show results per pages button */}

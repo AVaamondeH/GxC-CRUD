@@ -14,6 +14,7 @@ import { useState } from "react";
 import axios from "axios"
 import { endpoint } from "@/utils/endpoint";
 import { useUserContext } from "@/context/UserContext";
+import Swal from 'sweetalert2'
 
 interface UserActionsProps {
 	user: User;
@@ -21,14 +22,32 @@ interface UserActionsProps {
 
 const UserActions = ({ user }: UserActionsProps) => {
 	const [showModal, setShowModal] = useState(false);
-	const {setReload} = useUserContext()
+	const { setReload } = useUserContext()
 
 
 	const handleDelete = async (id: number) => {
-		const erase = await axios.delete(`${endpoint}/${id}`)
-		setReload(true)
-		console.log(erase);
-		
+		try {
+			Swal.fire({
+				title: "You're sure?",
+				text: 'This action will erase tis user',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Yes, continue',
+				cancelButtonText: 'Cancel'
+			}).then(async (result) => {
+				if (result.isConfirmed) {
+					await axios.delete(`${endpoint}/${id}`)
+					setReload(true)
+					Swal.fire('OK!', 'User deleted successfully', 'success');
+				}
+			});
+		} catch (error) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Something went wrong deleting this user, please try again later',
+			})
+		}
 	}
 
 	return (

@@ -6,6 +6,7 @@ import { User } from "@/context/types/User";
 import axios from "axios"
 import { endpoint } from "@/utils/endpoint";
 import { useUserContext } from "@/context/UserContext";
+import Swal from 'sweetalert2'
 
 
 
@@ -16,8 +17,7 @@ export type FormModalProps = {
 }
 
 const FormModal = ({ setShowModal, user, isUpdate }: FormModalProps) => {
-	console.log(user);
-	const {setReload} = useUserContext()
+	const { setReload } = useUserContext()
 	const [formData, setFormData] = useState({
 		name: "",
 		username: "",
@@ -49,21 +49,39 @@ const FormModal = ({ setShowModal, user, isUpdate }: FormModalProps) => {
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault()
+		try {
+			if (isUpdate && user) {
 
-		if (isUpdate && user) {
-			const update = await axios.put(`${endpoint}/${user.id}`, formData)
-			console.log(update);
-			
-		} else {
-			const create = await axios.post(endpoint, formData)
-			console.log(create);
+				await axios.put(`${endpoint}/${user.id}`, formData)
+				Swal.fire({
+					title: "User created Successfully!",
+					icon: 'success',
+				}).then(() => setReload(true))
+
+			} else {
+				await axios.post(endpoint, formData)
+				Swal.fire({
+					title: "User updated Successfully!",
+					icon: 'success',
+				}).then(() => setReload(true))
+			}
+		} catch (error) {
+			if (isUpdate) {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Something went wrong updating this user, please try again later',
+				})
+
+			} else {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Something went wrong creating, please try again later',
+				})
+			}
+
 		}
-		setReload(true)
-		//console.log("Form data:", formData);
-
-		// Aquí puedes agregar la lógica para enviar los datos al servidor o realizar cualquier acción necesaria.
-
-		// Cerrar el modal
 		setShowModal(false);
 	};
 
@@ -73,7 +91,7 @@ const FormModal = ({ setShowModal, user, isUpdate }: FormModalProps) => {
 				<div className="relative w-auto my-6 mx-auto max-w-3xl">
 					<div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none m-9">
 						<div className="flex items-start justify-center p-5 border-b border-solid border-gray-300 rounded-t">
-							<h3 className="text-3xl font-semibold">{isUpdate ? `Update a user`: `Create a new user`} </h3>
+							<h3 className="text-3xl font-semibold">{isUpdate ? `Update a user` : `Create a new user`} </h3>
 						</div>
 						<div className="relative p-6 flex-auto">
 							<form className="bg-gray-200 shadow-md rounded px-8 pt-6 pb-8 w-full ">
