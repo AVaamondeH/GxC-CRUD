@@ -67,37 +67,72 @@ export const deleteUser = async (id: number): Promise<number> => {
     return id
 };
 
-export const getUsersPaginated = async (page: number = 1, pageSize: number = 5, sortBy: keyof User = 'name', order: 'asc' | 'desc' = 'asc'): Promise<{ users: User[], totalPages: number }> => {
-    // Calcula el índice inicial y final para la paginación
-    
-    if(!users.length) await getUsers()
+export const getUsersPaginated = async (
+    page: number = 1,
+    pageSize: number = 5,
+    sortBy: keyof User = 'id',
+    order: 'asc' | 'desc' = 'asc',
+    filterOptions?: {
+        column: keyof User;
+        filterType: 'Contains' | 'NotContains' | 'Equals' | 'NotEquals' | 'StartsWith' | 'EndsWith';
+        searchValue: string;
+    }): Promise<{ users: User[], totalPages: number }> => {
+    if (!users.length) await getUsers();
 
-    
+    let filteredUsers = users;
+
+    if (filterOptions) {
+        filteredUsers = filterUsers(filterOptions);
+    }
+
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    console.log(page, pageSize, sortBy, order);
-    
+    console.log(sortBy);
 
-    // Copia y ordena el array de usuarios según la columna y el orden
-    const sortedUsers = [...users].sort((a, b) => {
-        if (sortBy === 'address') {
-            // Ordenar por la propiedad 'city' en la columna 'address'
-            const valA = a.address.city;
-            const valB = b.address.city;
-            return (order === 'asc') ? String(valA).localeCompare(String(valB)) : String(valB).localeCompare(String(valA));
+    const sortedUsers = [...filteredUsers].sort((a, b) => {
+        if (sortBy === 'id') {
+            
+            const numA = Number(a.id);
+            const numB = Number(b.id);
+            return (order === 'asc') ? numA - numB : numB - numA;
         } else {
-            // Para otras columnas, ordenar de manera estándar
-            const valA = a[sortBy];
-            const valB = b[sortBy];
-            return (order === 'asc') ? String(valA).localeCompare(String(valB)) : String(valB).localeCompare(String(valA));
+            const valA = String(a[sortBy]);
+            const valB = String(b[sortBy]);
+            return (order === 'asc') ? valA.localeCompare(valB) : valB.localeCompare(valA);
         }
     });
 
-    // Obtiene los usuarios en el rango calculado
     const paginatedUsers = sortedUsers.slice(startIndex, endIndex);
 
     const totalUsers = sortedUsers.length;
     const totalPages = Math.ceil(totalUsers / pageSize);
 
     return { users: paginatedUsers, totalPages };
+};
+
+export const filterUsers = (options: {
+    column: keyof User;
+    filterType: 'Contains' | 'NotContains' | 'Equals' | 'NotEquals' | 'StartsWith' | 'EndsWith';
+    searchValue: string;
+}): User[] => {
+    return users.filter((user) => {
+        const valueToFilter = user[options.column] as string;
+
+        switch (options.filterType) {
+            case 'Contains':
+                return valueToFilter.includes(options.searchValue);
+            case 'NotContains':
+                return !valueToFilter.includes(options.searchValue);
+            case 'Equals':
+                return valueToFilter === options.searchValue;
+            case 'NotEquals':
+                return valueToFilter !== options.searchValue;
+            case 'StartsWith':
+                return valueToFilter.startsWith(options.searchValue);
+            case 'EndsWith':
+                return valueToFilter.endsWith(options.searchValue);
+            default:
+                return true;
+        }
+    });
 };
