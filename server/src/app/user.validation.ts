@@ -19,6 +19,8 @@ export const updateUserValidation = Joi.object({
 
 export const validateSortBy = (sortBy: string): keyof User => {
     switch (sortBy) {
+        case 'id':
+            return 'id';
         case 'name':
             return 'name';
         case 'username':
