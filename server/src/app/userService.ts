@@ -69,6 +69,10 @@ export const deleteUser = async (id: number): Promise<number> => {
 
 export const getUsersPaginated = async (page: number = 1, pageSize: number = 5, sortBy: keyof User = 'name', order: 'asc' | 'desc' = 'asc'): Promise<{ users: User[], totalPages: number }> => {
     // Calcula el índice inicial y final para la paginación
+    
+    if(!users.length) await getUsers()
+
+    
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
     console.log(page, pageSize, sortBy, order);
