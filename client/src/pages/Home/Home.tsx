@@ -6,7 +6,6 @@ import { useUserContext } from "@/context/UserContext";
 function Home() {
 
 	const {users} = useUserContext()
-	//console.log(users, currentPage);
 	
 	return (
 	<>
